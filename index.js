@@ -1,6 +1,6 @@
 const express = require('express')
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const cors=require('cors')
+const cors = require('cors')
 const ObjectId = require('mongodb').ObjectId;
 const app = express()
 app.use(cors())
@@ -20,48 +20,49 @@ const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.jufnc.mongodb.net/
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
-    try {
-      await client.connect();
-      console.log("connected to database");
-      const database = client.db("hstu-blood-share");
-      const collection = database.collection("donors");
-
+  try {
+    await client.connect();
+    console.log("connected to database");
+    const database = client.db("hstu-blood-share");
+    const collection = database.collection("donors");
+    const collection_managementTeam = database.collection("managementTeam");
+    const collection_request = database.collection("managemenRequest");
     //   get api
 
-    app.get("/donors",async(req, res) => {
-        const query={}
-        const data = collection.find(query)
-        const donors = await data.toArray();
-        res.send(donors.reverse())
-        // res.send(data)
+    app.get("/donors", async (req, res) => {
+      const query = {}
+      const data = collection.find(query)
+      const donors = await data.toArray();
+      res.send(donors.reverse())
+      // res.send(data)
 
-      })
+    })
 
 
-       //get single api 
+    //get single api 
 
-      //  app.get("/data/:id", async(req, res) => {
-      //   const id =req.params.id;
-      //   const query={_id:ObjectId(id)}
-      //   const data = await collection.findOne(query)
-      //   res.send(data)// or res.json(data)
-      // })
+    //  app.get("/data/:id", async(req, res) => {
+    //   const id =req.params.id;
+    //   const query={_id:ObjectId(id)}
+    //   const data = await collection.findOne(query)
+    //   res.send(data)// or res.json(data)
+    // })
 
 
     //   post api 
 
 
-    app.post("/donors",async(req, res) => {
-        // console.log(req.body)
-        const data=req.body;
-        const result = await collection.insertOne(data);
-        // console.log(result.insertedId); 
-        res.send(result.insertedId) 
+    app.post("/donors", async (req, res) => {
+      // console.log(req.body)
+      const data = req.body;
+      const result = await collection.insertOne(data);
+      // console.log(result.insertedId); 
+      res.send(result.insertedId)
 
     })
     //   update api
 
-  
+
     // app.put("/data/:id",async(req, res)=>{
     //     const id =req.params.id;
     //    const updatedUser=req.body;
@@ -92,26 +93,78 @@ async function run() {
     //     // console.log(result.deletedCount)
     // })
 
+    // managing-team (admin )
 
 
+    app.post("/managingTeam", async (req, res) => {
+      console.log(req.body)
+      const bodyData = req.body;
+      const result = await collection_managementTeam.insertOne(bodyData);
+      console.log(result.insertedId);
+      res.send(result.insertedId)
+
+    })
+    //get addmin details
+
+    app.get("/managingTeam", async (req, res) => {
+      const query = {}
+      const dataa = collection_managementTeam.find(query)
+      const data = await dataa.toArray();
+      res.send(data)
+
+    })
 
 
-    } finally {
+    // request by user for blood 
+
+    app.post("/request", async (req, res) => {
+      console.log(req.body)
+      const bodyData = req.body;
+      const result = await collection_request.insertOne(bodyData);
+      console.log(result.insertedId);
+      res.send(result.insertedId)
+
+    })
+    
+    app.get("/request", async (req, res) => {
+      const query = {}
+      const dataa = collection_request.find(query)
+      const data = await dataa.toArray();
+      // res.send(data.reverse())
+      res.send(data)
+
+    })
+        
+    app.put("/request/:id",async(req, res)=>{
+      const id =req.params.id;
+     const filter = {_id:ObjectId(id)};
+     const options = { upsert: true };
+     const updateDoc = {
+      $set: {
+        status: "done",
+      },
+    };
+    const result = await collection_request.updateOne(filter, updateDoc,options);
+    res.send(result)
+  })
+
+
+  } finally {
     //   await client.close();
-    }
   }
-  run().catch(console.dir);
+}
+run().catch(console.dir);
 
 
 
 
 
-app.get('/', (req, res) =>{
-    res.send("backend with Md Imranul Haque 🚀"); 
+app.get('/', (req, res) => {
+  res.send("backend with Md Imranul Haque 🚀");
 })
 
-app.listen(port, ()=>{
-    console.log("index.js running")
+app.listen(port, () => {
+  console.log("index.js running")
 })
 
 
