@@ -149,6 +149,18 @@ async function run() {
   })
 
 
+  // delete all request here 🚀
+
+  app.delete("/request", async (req, res) => {
+    console.log("first")
+    console.log(req.body);
+    const result = await collection_request.deleteMany({});
+    // console.log("deleting user with id ",id);
+    // res.json(1)
+    res.send(result);
+    console.log(result.deletedCount)
+  })
+
   } finally {
     //   await client.close();
   }
