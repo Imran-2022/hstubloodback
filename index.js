@@ -27,6 +27,7 @@ async function run() {
     const collection = database.collection("donors");
     const collection_managementTeam = database.collection("managementTeam");
     const collection_request = database.collection("managemenRequest");
+    const collection_beApart = database.collection("beApartOfManagementTeam");
     //   get api
 
     app.get("/donors", async (req, res) => {
@@ -160,6 +161,29 @@ async function run() {
     res.send(result);
     console.log(result.deletedCount)
   })
+
+
+
+// become a part of managementTeam
+
+app.post("/beApart", async (req, res) => {
+  console.log(req.body)
+  const bodyData = req.body;
+  const result = await collection_beApart.insertOne(bodyData);
+  console.log(result.insertedId);
+  res.send(result.insertedId)
+
+})
+
+app.get("/beApart", async (req, res) => {
+  const query = {}
+  const dataa = collection_beApart.find(query)
+  const data = await dataa.toArray();
+  res.send(data)
+
+})
+
+
 
   } finally {
     //   await client.close();
