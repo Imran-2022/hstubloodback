@@ -152,9 +152,9 @@ async function run() {
   // delete all request here 🚀
 
   app.delete("/request", async (req, res) => {
-    console.log("first")
     console.log(req.body);
-    const result = await collection_request.deleteMany({});
+    const query={status:"done"}
+    const result = await collection_request.deleteMany(query);
     // console.log("deleting user with id ",id);
     // res.json(1)
     res.send(result);
