@@ -61,6 +61,19 @@ async function run() {
       res.send(result.insertedId)
 
     })
+
+    // http://localhost:8080/donors
+
+    app.delete("/donors/:id",async(req, res)=>{
+      const id=req.params.id;
+      const query={_id:ObjectId(id)}
+      const result = await collection.deleteOne(query);
+      // console.log("deleting user with id ",id);
+      // res.json(1)
+      res.send(result);
+      // console.log(result.deletedCount)
+  })
+
     //   update api
 
 
@@ -113,6 +126,27 @@ async function run() {
       const data = await dataa.toArray();
       res.send(data)
 
+    })
+
+    // http://localhost:8080/managingTeam
+
+     app.delete("/managingTeam/:id",async(req, res)=>{
+        const id=req.params.id;
+        const query={_id:ObjectId(id)}
+        const result = await collection_managementTeam.deleteOne(query);
+        // console.log("deleting user with id ",id);
+        // res.json(1)
+        res.send(result);
+        // console.log(result.deletedCount)
+    })
+     app.delete("/beApart/:id",async(req, res)=>{
+        const id=req.params.id;
+        const query={_id:ObjectId(id)}
+        const result = await collection_beApart.deleteOne(query);
+        // console.log("deleting user with id ",id);
+        // res.json(1)
+        res.send(result);
+        // console.log(result.deletedCount)
     })
 
 
