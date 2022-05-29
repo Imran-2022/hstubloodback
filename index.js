@@ -74,25 +74,32 @@ async function run() {
       // console.log(result.deletedCount)
   })
 
-    //   update api
+    //   update user profile data.
 
 
-    // app.put("/data/:id",async(req, res)=>{
-    //     const id =req.params.id;
-    //    const updatedUser=req.body;
-    //    const filter = {_id:ObjectId(id)};
-    //    const options = { upsert: true };
-    //    const updateDoc = {
-    //     $set: {
-    //         name:updatedUser.name,
-    //         img:updatedUser.img,
-    //         descriptions:updatedUser.descriptions
-    //     },
-    //   };
-    //   const result = await collection.updateOne(filter, updateDoc,options);
-    //   res.send(result)//res.json(result)
-    //     console.log("result : ",result);
-    // })
+    app.put("/donors/:id",async(req, res)=>{
+      const id =req.params.id;
+     const updatedUser=req.body;
+     console.log('updatedUser',updatedUser);
+     const filter = {_id:ObjectId(id)};
+     const options = { upsert: true };
+     const updateDoc = {
+      $set: {
+        mobile:updatedUser.mobile,
+        age:updatedUser.age,
+        bloodGroup:updatedUser.bloodGroup,
+        gender:updatedUser.gender,
+        department:updatedUser.department,
+        label:updatedUser.label,
+        semester:updatedUser.semester,
+        lastDonateDate:updatedUser.lastDonateDate
+      },
+    };
+    const result = await collection.updateOne(filter, updateDoc,options);
+    res.send(result)//res.json(result)
+      console.log("result : ",result);
+  })
+
 
 
     //   delete api
