@@ -13,7 +13,6 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 
 // const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.iyci5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-// console.log(uri)
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.jufnc.mongodb.net/?retryWrites=true&w=majority`;
@@ -22,12 +21,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
   try {
     await client.connect();
-    console.log("connected to database");
     const database = client.db("hstu-blood-share");
     const collection = database.collection("donors");
     const collection_managementTeam = database.collection("managementTeam");
     const collection_request = database.collection("managemenRequest");
     const collection_beApart = database.collection("beApartOfManagementTeam");
+    console.log("connected to mongodb database");
     //   get api
 
     app.get("/donors", async (req, res) => {
@@ -54,10 +53,8 @@ async function run() {
 
 
     app.post("/donors", async (req, res) => {
-      // console.log(req.body)
       const data = req.body;
       const result = await collection.insertOne(data);
-      // console.log(result.insertedId); 
       res.send(result.insertedId)
 
     })
@@ -68,10 +65,8 @@ async function run() {
       const id=req.params.id;
       const query={_id:ObjectId(id)}
       const result = await collection.deleteOne(query);
-      // console.log("deleting user with id ",id);
       // res.json(1)
       res.send(result);
-      // console.log(result.deletedCount)
   })
 
     //   update user profile data.
@@ -80,7 +75,6 @@ async function run() {
     app.put("/donors/:id",async(req, res)=>{
       const id =req.params.id;
      const updatedUser=req.body;
-     console.log('updatedUser',updatedUser);
      const filter = {_id:ObjectId(id)};
      const options = { upsert: true };
      const updateDoc = {
@@ -97,7 +91,6 @@ async function run() {
     };
     const result = await collection.updateOne(filter, updateDoc,options);
     res.send(result)//res.json(result)
-      console.log("result : ",result);
   })
 
 
@@ -108,20 +101,16 @@ async function run() {
     //     const id=req.params.id;
     //     const query={_id:ObjectId(id)}
     //     const result = await collection.deleteOne(query);
-    //     // console.log("deleting user with id ",id);
     //     // res.json(1)
     //     res.send(result);
-    //     // console.log(result.deletedCount)
     // })
 
     // managing-team (admin )
 
 
     app.post("/managingTeam", async (req, res) => {
-      console.log(req.body)
       const bodyData = req.body;
       const result = await collection_managementTeam.insertOne(bodyData);
-      console.log(result.insertedId);
       res.send(result.insertedId)
 
     })
@@ -141,29 +130,23 @@ async function run() {
         const id=req.params.id;
         const query={_id:ObjectId(id)}
         const result = await collection_managementTeam.deleteOne(query);
-        // console.log("deleting user with id ",id);
         // res.json(1)
         res.send(result);
-        // console.log(result.deletedCount)
     })
      app.delete("/beApart/:id",async(req, res)=>{
         const id=req.params.id;
         const query={_id:ObjectId(id)}
         const result = await collection_beApart.deleteOne(query);
-        // console.log("deleting user with id ",id);
         // res.json(1)
         res.send(result);
-        // console.log(result.deletedCount)
     })
 
 
     // request by user for blood 
 
     app.post("/request", async (req, res) => {
-      console.log(req.body)
       const bodyData = req.body;
       const result = await collection_request.insertOne(bodyData);
-      console.log(result.insertedId);
       res.send(result.insertedId)
 
     })
@@ -194,13 +177,10 @@ async function run() {
   // delete all request here 🚀
 
   app.delete("/request", async (req, res) => {
-    console.log(req.body);
     const query={status:"done"}
     const result = await collection_request.deleteMany(query);
-    // console.log("deleting user with id ",id);
     // res.json(1)
     res.send(result);
-    console.log(result.deletedCount)
   })
 
 
@@ -208,10 +188,8 @@ async function run() {
 // become a part of managementTeam
 
 app.post("/beApart", async (req, res) => {
-  console.log(req.body)
   const bodyData = req.body;
   const result = await collection_beApart.insertOne(bodyData);
-  console.log(result.insertedId);
   res.send(result.insertedId)
 
 })
